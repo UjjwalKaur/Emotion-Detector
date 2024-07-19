@@ -4,17 +4,78 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <title>Emotion Detection</title>
+
 </head>
+
 <body>
     <div class="container">
-        <div class="row">
+        <!--Uploading MP4 file and posting it to get the emotion dataframe-->
+        <div class="row section">
             <div class="col-lg-8 offset-lg-2">
-                <h3 class="mt-5">Live Streaming</h3>
-                <img src="{{ url_for('video_feed') }}" width="100%">
+                <h3 class="mt-5">Upload MP4 File</h3>
+                <form method="POST" action={{ url_for('downloaded_video_form') }} enctype="multipart/form-data">
+                    <div class="form-group">
+                        <input type="file" class="form-control-file" id="mp4_file" name="mp4_file" accept=".mp4" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
             </div>
         </div>
+    <div class="container">
+        <div class="row section">
+            <div class="col-lg-8 offset-lg-2">
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                    <ul class="flashes">
+                    {% for message in messages %}
+                      <li>{{ message }}</li>
+                    {% endfor %}
+                    </ul>
+                  {% endif %}
+                {% endwith %}
+            </div>
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <h1 class="mt-5">Detecting emotions...</h1>
+                    <form method="POST" action = {{url_for('video_feed')}} id="startPractiseForm">
+                        <button type="button" class="btn btn-primary btn-lg mt-3" onclick="startVideoFeed()">START PRACTISING</button>
+                    </form>
+                    <div id="video_feed_container" style="display: none; margin-top: 20px; border-radius: 10px; overflow: hidden;">
+                        <h2 class="mt-3">Emotion Detection Feed</h2>
+                        <img id="video_feed" src="{{ url_for('video_feed') }}" width="700px%" height="500px" >
+                        <div>
+                            <button class="btn-start" onclick="startVideoFeed()">Start Analyzing</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        {% if emotions %}
+        <div class="row section">
+            <div class="col-lg-8 offset-lg-2">
+                <h3>Emotions Detected:</h3>
+                <ul>
+                    {% for timestamp, emotion in emotions.iterrows() %}
+                    <li>{{ timestamp | round(2) }}s: {{ emotion['emotion'] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
     </div>
+
+
+    <script>
+        function startVideoFeed(){
+            document.getElementById('video_feed').style.display = 'block';
+            setInterval(function() {
+                document.getElementById('video_feed').src = "{{ url_for('video_feed') }}";
+            }, 1000);
+        }
+    </script>
     
 </body>
 </html>
