@@ -1,6 +1,4 @@
 # Emotion-Detector
 
-emotion_model.h5 file is empty now because it's too large to be uplaoded
-
-main.py and index.html have been updated according to new additions made in the code
+An emotion detection model built using CNN on the FER_2013 dataset. It can classify images into one of five facial expressions- Sad, Angry, Happy, Surprised and Fearful.
 
